@@ -24,5 +24,7 @@ def get(last_match=""):
             d3=dire_team[2],
             d4=dire_team[3],
             d5=dire_team[4],
+            start_time=match['start_time'],
+            duration=match['duration'],
             radiant_win=match['radiant_win']
         )
