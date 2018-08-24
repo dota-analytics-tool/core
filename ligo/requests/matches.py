@@ -1,7 +1,6 @@
 """Import matches from opendota"""
 import requests
 from ligo import config
-from ligo.models.Match import Match
 
 
 def get(last_match=""):
