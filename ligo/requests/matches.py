@@ -11,7 +11,7 @@ def create_table():
     query = "create table matches(match_id varchar, "
     for hero in db.execute():
         query = query + hero[0] + " int null, "
-    query = query + "start_time varchar, duration varchar, winner int);"
+    query = query + "start_time varchar, duration varchar, winner int, avg_mmr int);"
     db.raw(query)
 
 
@@ -28,12 +28,19 @@ def get(last_match=""):
 
         insert_matches = list()
         for match in matches:
+            if match['duration'] < 600:
+                continue
+            if not match['lobby_type'] in [0, 7]:
+                continue
+            if not match['game_mode'] in [1, 2, 4]:
+                continue
             match['winner'] = 0 if match['radiant_win'] == 1 else 1
             insert_match = {
                 'match_id' : match['match_id'],
                 'start_time': match['start_time'],
                 'duration': match['duration'],
-                'winner': match['winner']
+                'winner': match['winner'],
+                'avg_mmr': match['avg_mmr']
             }
             radiant_team = map(int, match['radiant_team'].split(','))
             for radiant_hero in radiant_team:
@@ -66,4 +73,6 @@ def write_to_csv(hero_list, list_matches):
             write_match.append(match['start_time'])
             write_match.append(match['duration'])
             write_match.append(match['winner'])
+            write_match.append(match['avg_mmr'])
             matchwriter.writerow(write_match)
+    csvfile.close()

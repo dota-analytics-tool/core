@@ -10,4 +10,4 @@ conn_info = {'host': '127.0.0.1',
              'ssl': False,
              }
 
-temp_folder = "tmp"
+temp_folder = "/tmp"
