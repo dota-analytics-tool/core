@@ -28,6 +28,25 @@ def get():
     db.execute()
 
 
+def all():
+    db = DB(config.conn_info)
+    db.builder.table('heroes').select()
+    heroes_db = db.execute()
+    heroes = {}
+    for hero in heroes_db:
+        heroes[hero[0]] = {'local_name': hero[1], 'name': hero[2]}
+    return heroes
+
+
+def hero_names():
+    db = DB(config.conn_info)
+    db.builder.table('heroes').select()
+    heroes_db = db.execute()
+    hero_names_list = list()
+    for hero in heroes_db:
+        hero_names_list.append(hero[2])
+    return hero_names_list
+
 def quote_escape(str):
     result = ""
     for char in str:

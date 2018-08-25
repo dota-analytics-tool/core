@@ -14,7 +14,6 @@ def create_table():
     db.raw(query)
 
 
-
 def get(last_match=""):
     matches = requests.get(config.opendota_api_url + "publicMatches", params={'less_than_match_id':last_match}).json()
     db = DB(config.conn_info)
@@ -41,5 +40,9 @@ def get(last_match=""):
         for dire_hero in dire_team:
             insert_match[heroes[dire_hero]] = 1
         insert_matches.append(insert_match)
-    db.builder.table('matches').insert(insert_matches)
-    db.execute()
+    return insert_matches
+
+
+def truncate():
+    db = DB(config.conn_info)
+    db.raw("truncate table matches")
