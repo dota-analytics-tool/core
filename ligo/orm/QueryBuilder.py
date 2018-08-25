@@ -26,7 +26,7 @@ class QueryBuilder:
     def insert(self, insert_array):
         query = ""
         for item in insert_array:
-            query = query + "insert into " + self.table_name + " ("
+            query = query + "insert into " + self.table_name + "("
             for key in item:
                 query = query + key + ","
             query = query[0:-1] + ") values("

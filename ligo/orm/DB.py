@@ -1,5 +1,6 @@
 import vertica_python
 from ligo.orm.QueryBuilder import QueryBuilder
+from bootstrap.run import *
 
 
 class DB:
@@ -10,5 +11,9 @@ class DB:
 
     def execute(self):
         query = self.builder.run()
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def raw(self, query):
         self.cursor.execute(query)
         return self.cursor.fetchall()

@@ -1,11 +1,12 @@
 """Import matches from opendota"""
 import requests
-from ligo import config
+from bootstrap.run import *
 
 
 def get(last_match=""):
     matches = requests.get(config.opendota_api_url + "publicMatches", params={'less_than_match_id':last_match}).json()
 
+    db = DB(config.conn_info)
     for match in matches:
 
         radiant_team = match['radiant_team'].split(',')
@@ -27,3 +28,4 @@ def get(last_match=""):
             duration=match['duration'],
             radiant_win=match['radiant_win']
         )
+    db.builder.insert()
