@@ -1,4 +1,3 @@
-from ligo import config
 from bootstrap.run import *
 
 db = DB(config.conn_info)
