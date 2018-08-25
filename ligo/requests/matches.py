@@ -3,29 +3,43 @@ import requests
 from bootstrap.run import *
 
 
+def create_table():
+    db = DB(config.conn_info)
+    db.builder.table('heroes').select('name')
+
+    query = "create table matches(match_id varchar, "
+    for hero in db.execute():
+        query = query + hero[0] + " int null, "
+    query = query + "start_time varchar, duration varchar, winner int);"
+    db.raw(query)
+
+
+
 def get(last_match=""):
     matches = requests.get(config.opendota_api_url + "publicMatches", params={'less_than_match_id':last_match}).json()
-
     db = DB(config.conn_info)
+
+    db.builder.table('heroes').select()
+    heroes_db = db.execute()
+    heroes = {}
+    for hero in heroes_db:
+        heroes[hero[0]] = hero[2]
+
+    insert_matches = list()
     for match in matches:
-
-        radiant_team = match['radiant_team'].split(',')
-        dire_team =  match['dire_team'].split(',')
-
-        Match.create(
-            match_id=match['match_id'],
-            r1=radiant_team[0],
-            r2=radiant_team[1],
-            r3=radiant_team[2],
-            r4=radiant_team[3],
-            r5=radiant_team[4],
-            d1=dire_team[0],
-            d2=dire_team[1],
-            d3=dire_team[2],
-            d4=dire_team[3],
-            d5=dire_team[4],
-            start_time=match['start_time'],
-            duration=match['duration'],
-            radiant_win=match['radiant_win']
-        )
-    db.builder.insert()
+        match['winner'] = 0 if match['radiant_win'] == 1 else 1
+        insert_match = {
+            'match_id' : match['match_id'],
+            'start_time': match['start_time'],
+            'duration': match['duration'],
+            'winner': match['winner']
+        }
+        radiant_team = map(int, match['radiant_team'].split(','))
+        for radiant_hero in radiant_team:
+            insert_match[heroes[radiant_hero]] = 0
+        dire_team = map(int, match['dire_team'].split(','))
+        for dire_hero in dire_team:
+            insert_match[heroes[dire_hero]] = 1
+        insert_matches.append(insert_match)
+    db.builder.table('matches').insert(insert_matches)
+    db.execute()
