@@ -9,3 +9,5 @@ conn_info = {'host': '127.0.0.1',
              'unicode_error': 'strict',
              'ssl': False,
              }
+
+temp_folder = "tmp"

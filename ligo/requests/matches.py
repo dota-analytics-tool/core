@@ -1,5 +1,6 @@
 """Import matches from opendota"""
 import requests
+import csv
 from bootstrap.run import *
 
 
@@ -46,3 +47,20 @@ def get(last_match=""):
 def truncate():
     db = DB(config.conn_info)
     db.raw("truncate table matches")
+
+
+def write_to_csv(hero_list, list_matches):
+    with open(config.temp_folder + '/matches.csv', 'a', newline='') as csvfile:
+        matchwriter = csv.writer(csvfile, delimiter=',')
+        for match in list_matches:
+            write_match = list()
+            write_match.append(match['match_id'])
+            for hero in hero_list:
+                if hero in match:
+                    write_match.append(match[hero])
+                else:
+                    write_match.append(None)
+            write_match.append(match['start_time'])
+            write_match.append(match['duration'])
+            write_match.append(match['winner'])
+            matchwriter.writerow(write_match)

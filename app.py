@@ -1,23 +1,17 @@
 from bootstrap.run import *
 from ligo.requests import heroes, matches
-import csv
 
 db = DB(config.conn_info)
 
+count_of_requests = 1000
 
 hero_list = heroes.hero_names()
-list_matches = matches.get()
-with open('matches.csv', 'w', newline='') as csvfile:
-    matchwriter = csv.writer(csvfile, delimiter=',')
-    for match in list_matches:
-        write_match = list()
-        write_match.append(match['match_id'])
-        for hero in hero_list:
-            if hero in match:
-                write_match.append(match[hero])
-            else:
-                write_match.append(None)
-        write_match.append(match['start_time'])
-        write_match.append(match['duration'])
-        write_match.append(match['winner'])
-        matchwriter.writerow(write_match)
+
+last_match = "4079216614"
+for i in range(count_of_requests):
+    print("Iteration ", i+1)
+
+    list_matches = matches.get(last_match)
+    last_match = list_matches[99]['match_id']
+
+    matches.write_to_csv(hero_list, list_matches)
