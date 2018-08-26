@@ -49,6 +49,8 @@ def get(last_match=""):
             for dire_hero in dire_team:
                 insert_match[heroes[dire_hero]] = 1
             insert_matches.append(insert_match)
+        if len(insert_matches) == 0:
+            return get(matches[99]['match_id'])
         return insert_matches
     except Exception:
         return get(last_match)

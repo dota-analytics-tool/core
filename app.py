@@ -14,7 +14,7 @@ def get_matches(last_match, count_of_requests=1000):
         print("Iteration ", i+1)
 
         list_matches = matches.get(last_match)
-        last_match = list_matches[1]['match_id']
+        last_match = list_matches[-1]['match_id']
 
         matches.write_to_csv(hero_list, list_matches)
 
